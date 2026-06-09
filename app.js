@@ -1,83 +1,52 @@
 require("dotenv").config();
 
-const OpenAI = require("openai");
-const { GoogleGenAI } = require("@google/genai");
-const Anthropic = require("@anthropic-ai/sdk");
+const askGemini = require("./providers/gemini");
+const askOpenAI = require("./providers/openai");
+const askAnthropic = require("./providers/anthropic");
 
-const provider = process.argv[2];
+const withRetry = require("./utils/retry");
+const countTokens = require("./utils/tokenCounter");
 
 async function run() {
+  const provider = process.argv[2];
+  const prompt = process.argv.slice(3).join(" ");
 
-  const userMessage = process.argv[3] || "Hello AI";
-
-  // GEMINI
-  if (provider === "gemini") {
-
-    const ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: userMessage,
-    });
-
-    console.log("\nGemini Response:\n");
-    console.log(response.text);
-  }
-
-  // OPENAI
-  else if (provider === "openai") {
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
-    });
-
-    console.log("\nOpenAI Response:\n");
-    console.log(response.choices[0].message.content);
-  }
-
-  // ANTHROPIC
-  else if (provider === "anthropic") {
-
-    const anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-
-    const response = await anthropic.messages.create({
-      model: "claude-3-haiku-20240307",
-      max_tokens: 200,
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
-    });
-
-    console.log("\nAnthropic Response:\n");
-    console.log(response.content[0].text);
-  }
-
-  else {
+  if (!provider || !prompt) {
     console.log("Usage:");
-    console.log('node app.js gemini "hello"');
-    console.log('node app.js openai "hello"');
-    console.log('node app.js anthropic "hello"');
+    console.log('node app.js gemini "Hello"');
+    return;
+  }
+
+  try {
+    let response = "";
+
+    console.log(`\nUsing Provider: ${provider}\n`);
+
+    if (provider === "gemini") {
+      response = await withRetry(() => askGemini(prompt));
+    }
+
+    else if (provider === "openai") {
+      response = await withRetry(() => askOpenAI(prompt));
+    }
+
+    else if (provider === "anthropic") {
+      response = await withRetry(() => askAnthropic(prompt));
+    }
+
+    else {
+      console.log("Invalid provider");
+      return;
+    }
+
+    console.log("\n");
+
+    console.log("Token Estimate:", countTokens(response));
+
+  } catch (error) {
+    console.error("\nError:");
+    console.error(error.message);
   }
 }
 
-run().catch((error) => {
-  console.error("\nError:");
-  console.error(error.message);
-});
+run();
