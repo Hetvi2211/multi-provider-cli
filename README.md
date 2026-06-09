@@ -179,25 +179,25 @@ node app.js anthropic "Explain React hooks"
 
 ## Gemini Output
 
-![Gemini Output](./screenshots/gemini-output.png)
+![Gemini Output](./screenshot/gemini.png)
 
 ---
 
 ## OpenAI + Anthropic Output
 
-![OpenAI + Anthropic Output](./screenshots/openai-anthropic-output.png)
+![OpenAI + Anthropic Output](./screenshot/openai-anthropic.png)
 
 ---
 
 ## Retry Handling
 
-![Retry Handling](./screenshots/retry-handling.png)
+![Retry Handling](./screenshot/retry-handling.png)
 
 ---
 
 ## Token Counting
 
-![Token Counting](./screenshots/token-count.png)
+![Token Counting](./screenshot/token-count.png)
 
 ---
 
