@@ -369,16 +369,25 @@ appends a CSV row after every successful call...
 ## 📸 Screenshots
 
 ### Gemini Output
-![Gemini Output](./screenshot/gemini-output.png)
+![Gemini Output](./screenshot/gemini.png)
 
 ### OpenAI + Anthropic Output
-![OpenAI and Anthropic Output](./screenshot/openai-anthropic-output.png)
+![OpenAI and Anthropic Output](./screenshot/openai-anthropic.png)
 
 ### Retry Handling
 ![Retry Handling](./screenshot/retry-handling.png)
 
 ### Token Counting
 ![Token Counting](./screenshot/token-count.png)
+
+### Telemetry Logging
+![Token Counting](./screenshot/telemetry.png)
+
+### Dashboard
+![Token Counting](./screenshot/dashboard.png)
+
+### Codebase Explainer
+![Token Counting](./screenshot/explainer.png)
 
 ---
 
